@@ -18,7 +18,7 @@ namespace LibraryWebApi.Controllers
             _genre = genre;
         }
         [HttpGet]
-        [Route("getAllGenres")]
+        [Route("all")]
         public async Task<IActionResult> GetAllGenres()
         {
 
@@ -28,7 +28,7 @@ namespace LibraryWebApi.Controllers
             });
         }
         [HttpPost]
-        [Route("addNewGenre")]
+        [Route("add")]
         public async Task<IActionResult> AddNewGenre([FromQuery] CreateGenre createdGenre)
         {
 
@@ -51,7 +51,7 @@ namespace LibraryWebApi.Controllers
             return Ok();
         }
         [HttpPut]
-        [Route("updateGenreById/{id}")]
+        [Route("update/{id}")]
         public async Task<IActionResult> UpdateGenreById(int id, [FromQuery] CreateGenre createdGenre)
         {
 
@@ -74,7 +74,7 @@ namespace LibraryWebApi.Controllers
         }
 
         [HttpDelete]
-        [Route("deleteGenreById/{id}")]
+        [Route("delete/{id}")]
         public async Task<IActionResult> DeleteGenreById(int id)
         {
             if (!_genre.GenreExists(id))

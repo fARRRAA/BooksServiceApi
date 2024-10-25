@@ -25,7 +25,7 @@ namespace BooksServiceApi.Controllers
             _genre = genreService;
         }
         [HttpGet]
-        [Route("getAllBooks")]
+        [Route("all")]
         public async Task<IActionResult> GetAllBooks([FromQuery] string? author, [FromQuery] string? genre, [FromQuery] int? year, [FromQuery] int? page,
         [FromQuery] int? pageSize)
         {
@@ -36,7 +36,7 @@ namespace BooksServiceApi.Controllers
             });
         }
         [HttpPost]
-        [Route("addNewBook")]
+        [Route("add")]
         public async Task<IActionResult> AddNewBook([FromBody] CreateBook book)
         {
 
@@ -59,7 +59,7 @@ namespace BooksServiceApi.Controllers
             return Ok();
         }
         [HttpPut]
-        [Route("updateBook/{id}")]
+        [Route("update/{id}")]
         public async Task<IActionResult> UpdateBook(int id, [FromBody] CreateBook book)
         {
 
@@ -83,7 +83,7 @@ namespace BooksServiceApi.Controllers
 
         }
         [HttpDelete]
-        [Route("deleteBook/{id}")]
+        [Route("delete/{id}")]
         public async Task<ActionResult> DeleteBook(int id)
         {
 
@@ -98,7 +98,7 @@ namespace BooksServiceApi.Controllers
             return Ok();
         }
         [HttpGet]
-        [Route("getBooksByGenre/{id}")]
+        [Route("genre/{id}")]
         public async Task<IActionResult> GetBooksByGenre(int id)
         {
             if (!_genre.GenreExists(id))
@@ -115,7 +115,7 @@ namespace BooksServiceApi.Controllers
             });
         }
         [HttpGet]
-        [Route("getBooksByAuthor/{author}")]
+        [Route("author/{author}")]
         public async Task<IActionResult> GetBooksByAuthor(string author)
         {
 
@@ -134,7 +134,7 @@ namespace BooksServiceApi.Controllers
             });
         }
         [HttpGet]
-        [Route("getBooksByName/{name}")]
+        [Route("name/{name}")]
         public async Task<IActionResult> GetBooksByName(string name, int? page, int? pageSize)
         {
 
@@ -152,7 +152,7 @@ namespace BooksServiceApi.Controllers
             });
         }
         [HttpGet]
-        [Route("getAllExemplars")]
+        [Route("exemplars")]
         public async Task<IActionResult> GetALlExemplars()
         {
 
@@ -162,7 +162,7 @@ namespace BooksServiceApi.Controllers
             });
         }
         [HttpGet]
-        [Route("getExemplar/{bookId}")]
+        [Route("exemplar/{bookId}")]
         public async Task<IActionResult> GetExemplar(int bookId)
         {
 
@@ -179,7 +179,7 @@ namespace BooksServiceApi.Controllers
             });
         }
         [HttpGet]
-        [Route("getBookbyId")]
+        [Route("id")]
         public async Task<IActionResult> GetBookbyId(int id)
         {
             if (!_books.BookExists(id))
