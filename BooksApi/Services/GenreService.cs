@@ -6,7 +6,7 @@ using BooksServiceApi.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace LibraryWebApi.Services
+namespace BooksServiceApi.Services
 {
     public class GenreService : IGenreService
     {

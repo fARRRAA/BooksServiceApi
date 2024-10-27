@@ -1,7 +1,7 @@
 
 using BooksServiceApi.dbContext;
 using BooksServiceApi.Interfaces;
-using LibraryWebApi.Services;
+using BooksServiceApi.Services;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,8 +17,12 @@ namespace BooksApi
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddScoped<HttpClient>();
             builder.Services.AddScoped<IBookService, BookService>();
             builder.Services.AddScoped<IGenreService, GenreService>();
+            builder.Services.AddScoped<IReaderService,ReaderService>();
+            builder.Services.AddScoped<IBookExemplarService, BookExemplarService>();
+            builder.Services.AddScoped<IRentService,RentService>();
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOrigins",

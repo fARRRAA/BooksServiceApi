@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BooksServiceApi.Migrations
 {
     [DbContext(typeof(BooksApiDb))]
-    [Migration("20241024175234_first")]
-    partial class first
+    [Migration("20241027164106_ddsdadsa")]
+    partial class ddsdadsa
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -99,6 +99,92 @@ namespace BooksServiceApi.Migrations
                     b.ToTable("Genre");
                 });
 
+            modelBuilder.Entity("BooksServiceApi.Models.Readers", b =>
+                {
+                    b.Property<int>("Id_User")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_User"));
+
+                    b.Property<DateTime>("Date_Birth")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int?>("Id_Role")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Login")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id_User");
+
+                    b.HasIndex("Id_Role");
+
+                    b.ToTable("Readers");
+                });
+
+            modelBuilder.Entity("BooksServiceApi.Models.RentHistory", b =>
+                {
+                    b.Property<int>("id_Rent")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id_Rent"));
+
+                    b.Property<int>("Id_Book")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Id_Reader")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Rental_End")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("Rental_Start")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Rental_Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Rental_Time")
+                        .HasColumnType("int");
+
+                    b.HasKey("id_Rent");
+
+                    b.HasIndex("Id_Book");
+
+                    b.HasIndex("Id_Reader");
+
+                    b.ToTable("RentHistory");
+                });
+
+            modelBuilder.Entity("BooksServiceApi.Models.Roles", b =>
+                {
+                    b.Property<int>("Id_Role")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id_Role"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id_Role");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("BooksServiceApi.Models.BookExemplar", b =>
                 {
                     b.HasOne("BooksServiceApi.Models.Books", "Book")
@@ -119,6 +205,34 @@ namespace BooksServiceApi.Migrations
                         .IsRequired();
 
                     b.Navigation("Genre");
+                });
+
+            modelBuilder.Entity("BooksServiceApi.Models.Readers", b =>
+                {
+                    b.HasOne("BooksServiceApi.Models.Roles", "Role")
+                        .WithMany()
+                        .HasForeignKey("Id_Role");
+
+                    b.Navigation("Role");
+                });
+
+            modelBuilder.Entity("BooksServiceApi.Models.RentHistory", b =>
+                {
+                    b.HasOne("BooksServiceApi.Models.Books", "Book")
+                        .WithMany()
+                        .HasForeignKey("Id_Book")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("BooksServiceApi.Models.Readers", "Reader")
+                        .WithMany()
+                        .HasForeignKey("Id_Reader")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Book");
+
+                    b.Navigation("Reader");
                 });
 #pragma warning restore 612, 618
         }

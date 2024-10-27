@@ -1,13 +1,11 @@
-﻿using LibraryWebApi.Controllers;
-using BooksServiceApi.dbContext;
+﻿using BooksServiceApi.dbContext;
 using BooksServiceApi.Interfaces;
 using BooksServiceApi.Models;
 using BooksServiceApi.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
-namespace LibraryWebApi.Services
+namespace BooksServiceApi.Services
 {
     public class BookService : IBookService
     {
@@ -89,7 +87,6 @@ namespace LibraryWebApi.Services
             await _context.SaveChangesAsync();
 
         }
-
         public async Task DeleteBook(int id)
         {
             var temp = await _context.Books.FirstOrDefaultAsync(b => b.Id_Book == id);
