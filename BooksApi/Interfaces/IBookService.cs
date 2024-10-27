@@ -16,9 +16,13 @@ namespace BooksServiceApi.Interfaces
         public List<BookExemplar> GetAllExemplars();
         public BookExemplar GetExemplar(int bookId);
         public Books GetBookById(int id);
-
         public bool BookExists(int id);
         public List<Books> GetAll();
+        public Task<string> UploadProfilePhoto(int readerId, IFormFile photo);
+        public Task<string> UpdateProfilePhoto(int readerId, IFormFile photo);
+        public Task DeleteProfilePhoto(int readerId);
+        public string removeUrl(string url);
+
     }
 }
  

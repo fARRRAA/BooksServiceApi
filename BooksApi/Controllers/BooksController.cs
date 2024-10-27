@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using BooksServiceApi.Controllers;
 using static System.Reflection.Metadata.BlobBuilder;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 //using LibraryWebApi.Requests;
 namespace BooksServiceApi.Controllers
 {
@@ -195,6 +196,25 @@ namespace BooksServiceApi.Controllers
                 book = _books.GetBookById(id)
             });
 
+        }
+        [HttpPost("uploadpfp")]
+        public async Task<IActionResult> UploadProfilePhoto(int readerId, IFormFile photo)
+        {
+            var url = await _books.UploadProfilePhoto(readerId, photo);
+            return new OkObjectResult(new { url = url });
+        }
+        [HttpPut("updatepfp/{readerId}")]
+        public async Task<IActionResult> UpdateProfilePhoto(int readerId, IFormFile photo)
+        {
+            var url = await _books.UpdateProfilePhoto(readerId, photo);
+            return new OkObjectResult(new { url = url });
+        }
+
+        [HttpDelete("deletepfp/{readerId}")]
+        public async Task<IActionResult> DeleteProfilePhoto(int readerId)
+        {
+            await _books.DeleteProfilePhoto(readerId);
+            return Ok();
         }
     }
 }

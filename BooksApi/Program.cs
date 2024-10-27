@@ -22,6 +22,7 @@ namespace BooksApi
             builder.Services.AddScoped<IGenreService, GenreService>();
             builder.Services.AddScoped<IReaderService,ReaderService>();
             builder.Services.AddScoped<IBookExemplarService, BookExemplarService>();
+            builder.Services.AddScoped<HttpClient>();
             builder.Services.AddScoped<IRentService,RentService>();
             builder.Services.AddCors(options =>
             {

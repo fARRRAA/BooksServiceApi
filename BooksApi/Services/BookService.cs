@@ -4,6 +4,9 @@ using BooksServiceApi.Models;
 using BooksServiceApi.Requests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Net.Http;
+using System;
+using System.Net.Http.Headers;
 
 namespace BooksServiceApi.Services
 {
@@ -11,12 +14,15 @@ namespace BooksServiceApi.Services
     {
         readonly BooksApiDb _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly string URL = "https://localhost:7270/api/Photos";
+        private readonly HttpClient _httpClient;
 
 
-        public BookService(BooksApiDb context, IHttpContextAccessor httpContextAccessor)
+        public BookService(BooksApiDb context, IHttpContextAccessor httpContextAccessor, HttpClient httpClient)
         {
             _context = context;
             _httpContextAccessor = httpContextAccessor;
+            _httpClient = httpClient;
 
         }
 
@@ -135,7 +141,81 @@ namespace BooksServiceApi.Services
         {
             return _context.Books.ToList();
         }
+        public async Task<string> UploadProfilePhoto(int bookId, IFormFile file)
+        {
+            using (var content = new MultipartFormDataContent())
+            {
+                var fileContent = new StreamContent(file.OpenReadStream());
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+                content.Add(fileContent, "file", file.FileName);
 
+                var response = await _httpClient.PostAsync($"{URL}/upload", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    var photoURL = $"{URL}/photo/{file.FileName}";
+                    var book = await _context.Books.FirstOrDefaultAsync(r => r.Id_Book == bookId);
+                    book.Photo = photoURL;
+                    await _context.SaveChangesAsync();
+                    return photoURL;
+                }
+                else
+                {
+                    string errorContent = await response.Content.ReadAsStringAsync();
+
+                    return $"{response.StatusCode}, {errorContent}";
+                }
+
+            }
+        }
+
+        public async Task<string> UpdateProfilePhoto(int bookId, IFormFile file)
+        {
+            var book = await _context.Books.FirstOrDefaultAsync(r => r.Id_Book == bookId);
+            var fileName = removeUrl(book.Photo);
+
+            using (var content = new MultipartFormDataContent())
+            {
+                var fileContent = new StreamContent(file.OpenReadStream());
+                fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+                content.Add(fileContent, "file", file.FileName);
+
+                var response = await _httpClient.PutAsync($"{URL}/update/{fileName}", content);
+                if (response.IsSuccessStatusCode)
+                {
+                    var photoURL = $"{URL}/photo/{file.FileName}";
+                    book.Photo = photoURL;
+                    await _context.SaveChangesAsync();
+                    return photoURL;
+                }
+                else
+                {
+                    string errorContent = await response.Content.ReadAsStringAsync();
+                    return $"{response.StatusCode}, {errorContent}";
+                }
+            }
+        }
+
+        public async Task DeleteProfilePhoto(int bookId)
+        {
+            var book = await _context.Books.FirstOrDefaultAsync(r => r.Id_Book == bookId);
+            var fileName = removeUrl(book.Photo);
+            var response = await _httpClient.DeleteAsync($"{URL}/delete/{fileName}");
+            if (response.IsSuccessStatusCode)
+            {
+                book.Photo = "";
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public string removeUrl(string url)
+        {
+            var remove = "https://localhost:7270/api/Photos/photo/";
+            if (url.StartsWith(remove))
+            {
+                return url.Substring(remove.Length);
+            }
+            return url.Substring(remove.Length);
+        }
 
     }
 }
