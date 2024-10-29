@@ -2,8 +2,11 @@
 using BooksServiceApi.dbContext;
 using BooksServiceApi.Interfaces;
 using BooksServiceApi.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.CookiePolicy;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace BooksApi
 {
@@ -17,6 +20,7 @@ namespace BooksApi
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<HttpClient>();
             builder.Services.AddScoped<IBookService, BookService>();
             builder.Services.AddScoped<IGenreService, GenreService>();
@@ -38,6 +42,38 @@ namespace BooksApi
      options.UseSqlServer(builder.Configuration.GetConnectionString("TestDbString")), ServiceLifetime.Scoped);
             builder.Services.AddHttpContextAccessor();
 
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                {
+                    options.TokenValidationParameters = new()
+                    {
+
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtOptions:SecretKey"]))
+                    };
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnMessageReceived = context =>
+                        {
+                            //var authorizationHeader = context.Request.Headers["Authorization"].ToString();
+                            //if (!string.IsNullOrEmpty(authorizationHeader) && authorizationHeader.StartsWith("Bearer "))
+                            //{
+                            //    context.Token = authorizationHeader.Substring("Bearer ".Length).Trim();
+
+
+                            //}
+                            context.Token = context.Request.Cookies["wild-cookies"];
+
+                            return Task.CompletedTask;
+
+                        }
+
+                    };
+
+                });
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -54,6 +90,8 @@ namespace BooksApi
                 Secure = CookieSecurePolicy.Always
             });
             app.UseCors("AllowAllOrigins");
+
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

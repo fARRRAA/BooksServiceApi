@@ -25,7 +25,7 @@ namespace LibraryWebApi.Controllers
             _rent = rentService;
             _exemplar = exemplar;
         }
-        //[Authorize]
+        [Authorize]
         [HttpPost("RentBookById/{bookId}")]
         public async Task<IActionResult> RentBookById(int bookId, int readerId, int rentalTime)
         {
@@ -67,6 +67,7 @@ namespace LibraryWebApi.Controllers
             await _rent.RentBookById(bookId, readerId, rentalTime);
             return Ok();
         }
+        [Authorize]
         [HttpGet("getReadersRentals/{id}")]
         public async Task<IActionResult> GetReadersRentals(int id)
         {
@@ -82,6 +83,7 @@ namespace LibraryWebApi.Controllers
                 rentals = _rent.GetReadersRentals(id)
             });
         }
+        [Authorize]
         [HttpPost("returnRent{rentId}")]
         public async Task<IActionResult> ReturnRent(int rentId)
         {
@@ -95,6 +97,7 @@ namespace LibraryWebApi.Controllers
             await _rent.ReturnRent(rentId);
             return Ok();
         }
+        [Authorize(Roles = "admin")]
         [HttpGet("getCurrentRentals")]
         public async Task<IActionResult> GetCurrentRentals()
         {
@@ -103,6 +106,7 @@ namespace LibraryWebApi.Controllers
                 rentals = _rent.GetCurrentRentals()
             });
         }
+        [Authorize(Roles = "admin")]
         [HttpGet("getBookRentals/{id}")]
         public async Task<IActionResult> GetBookRentals(int id)
         {
